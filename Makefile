@@ -80,7 +80,8 @@ FSOBJECTS = $(addprefix $(FSFOLDER)/,$(notdir $(FSFILES:.cpp=.o)))
            parallelLouvainMethodScale.o parallelLouvainWithColoring.o parallelLouvainWithColoringNoMap.o \
 	   louvainMultiPhaseRun.o parseInputParameters.o vertexFollowing.o parallelLouvianMethodApprox.o runMultiPhaseBasicApprox.o
 
-all: $(TARGET_13) 
+all: $(TARGET_13)
+	./driverForGraphClusteringDelta -a 1 demo/simple.txt
 coloring: $(TARGET_3)
 hdf5: $(TARGET_H5)
 

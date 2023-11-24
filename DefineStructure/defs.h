@@ -123,6 +123,8 @@ struct clustering_parameters
     int percentage;
     bool compute_metrics;
 
+    int nDelta; // number of detla files to process
+    std::string sDeltaFilePrefix; // prefix of the delta file name delta.1.txt
     clustering_parameters();
     void usage();
 

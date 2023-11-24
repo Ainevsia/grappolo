@@ -17,27 +17,24 @@ int main(int argc, char** argv) {
     {
         nT = omp_get_num_threads();
     }
-    if (nT < 1) {
-        printf("The number of threads should be greater than one.\n");
-        return 0;
-    }
     
     double time1, time2;
     graph* G = (graph *) malloc (sizeof(graph));
     char *inFile = (char*) opts.inFile;
     parse_UndirectedEdgeList(G, inFile);
-
-    displayGraphCharacteristics(G);
     int threadsOpt = 1;
     
     int replaceMap = 0;
     if(  opts.basicOpt == 1 )
         replaceMap = 1;
     
-    // Datastructures to store clustering information
     long NV = G->numVertices;
+
+    // Datastructures to store clustering information
     long *C_orig = (long *) malloc (NV * sizeof(long)); assert(C_orig != 0);
-    graph* G_orig = (graph *) malloc (sizeof(graph)); //The original version of the graph
+    
+    // The original version of the graph
+    graph* G_orig = (graph *) malloc (sizeof(graph)); 
     duplicateGivenGraph(G, G_orig);
     
 #pragma omp parallel for
@@ -58,11 +55,18 @@ int main(int argc, char** argv) {
         fclose(out);
     }
     
-    if(C_orig != 0) free(C_orig);
+    free(C_orig);
 
     // now start dealing with delta files, like delta-screaning 
+    for (size_t i = 0; i < opts.nDelta; i++)
+    {
+        string sDeltaFileName = opts.sDeltaFilePrefix + to_string(i) + string(".txt");
+        graph* G_new = (graph *) malloc (sizeof(graph));
+        parse_Delta(G_new, sDeltaFileName.c_str(), G_orig);
 
-    parse_UndirectedEdgeListWeightedDelta(G, inFile);
+    }
+    
+    
 
 
 

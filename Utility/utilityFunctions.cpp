@@ -93,6 +93,7 @@ void displayGraph(graph *G) {
     printf("\n***********************************\n");
 }
 
+// just simple object deep copying
 void duplicateGivenGraph(graph *Gin, graph *Gout) {
     long    NV        = Gin->numVertices;
     long    NS        = Gin->sVertices;

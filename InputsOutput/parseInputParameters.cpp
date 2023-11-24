@@ -44,8 +44,9 @@
 using namespace std;
 
 clustering_parameters::clustering_parameters()
-: ftype(7), strongScaling(false), output(false), VF(false), coloring(0), numColors(16), percentage(100), syncType(0),
-threadsOpt(false), basicOpt(0), C_thresh(0.01), minGraphSize(100000), threshold(0.000001), compute_metrics(false)
+: ftype(7), strongScaling(false), output(true), VF(false), coloring(0), numColors(16), percentage(100), syncType(0),
+threadsOpt(false), basicOpt(0), C_thresh(0.01), minGraphSize(100000), threshold(0.000001), compute_metrics(false),
+nDelta(0), sDeltaFilePrefix("demo/delta.")
 {}
 
 void clustering_parameters::usage() {
@@ -75,11 +76,12 @@ void clustering_parameters::usage() {
     cout << "Threshold      : -t <value> -- default=0.000001" << endl;
     cout << "Percentage     : -p <value> -- default=100"      << endl;
     cout << "# of colors    : -n <value> -- default=16"       << endl;
+    cout << "# of deltas    : -a <value> -- default=0"        << endl;
     cout << "***************************************************************************************"<< endl;
 }//end of usage()
 
 bool clustering_parameters::parse(int argc, char *argv[]) {
-    static const char *opt_string = "c:n:p:b:y:svof:t:d:m:r";
+    static const char *opt_string = "c:n:p:b:y:svof:t:d:m:ra:";
     int opt = getopt(argc, argv, opt_string);
     while (opt != -1) {
         switch (opt) {
@@ -139,6 +141,8 @@ bool clustering_parameters::parse(int argc, char *argv[]) {
                     cout << "Number of colors should be between 1 and 1024 (default=16)" << endl;
                     numColors = 16;
                 }
+                break;
+            case 'a': nDelta = atol(optarg);
                 break;
 
             default:
