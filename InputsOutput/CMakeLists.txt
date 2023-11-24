@@ -8,6 +8,7 @@ set( IOFOLDER_SRC
   ${CMAKE_SOURCE_DIR}/${IOFOLDER}/loadBinary.cpp
   ${CMAKE_SOURCE_DIR}/${IOFOLDER}/loadDimacs.cpp
   ${CMAKE_SOURCE_DIR}/${IOFOLDER}/loadEdgeList.cpp
+  ${CMAKE_SOURCE_DIR}/${IOFOLDER}/loadEdgeListDelta.cpp
   ${CMAKE_SOURCE_DIR}/${IOFOLDER}/loadMatrixMarket.cpp
   ${CMAKE_SOURCE_DIR}/${IOFOLDER}/loadMetis.cpp
   ${CMAKE_SOURCE_DIR}/${IOFOLDER}/loadPajekFormat.cpp

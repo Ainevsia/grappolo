@@ -11,6 +11,7 @@ void parse_MatrixMarket_Sym_AsGraph(graph * G, char *fileName);
 
 void parse_DirectedEdgeList(dGraph * G, char *fileName); //Directed graph
 void parse_UndirectedEdgeListWeighted(graph * G, char *fileName); // for John F's graphs
+void parse_UndirectedEdgeListWeightedDelta(graph * G, char *fileName);
 void parse_UndirectedEdgeList(graph * G, char *fileName);
 void parse_EdgeListBinaryNew(graph * G, char *fileName);
 void parse_PajekFormatUndirected(graph* G, char* fileName);
