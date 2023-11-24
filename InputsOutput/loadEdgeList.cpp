@@ -283,6 +283,7 @@ void parse_UndirectedEdgeList(graph * G, char *fileName) {
     G->numEdges     = NE;
     G->edgeListPtrs = edgeListPtr;
     G->edgeList     = edgeList;
+    G->tmpEdgeList  = std::vector<edge>(tmpEdgeList, tmpEdgeList + NE);
     
     //Clean up:
     free(tmpEdgeList);

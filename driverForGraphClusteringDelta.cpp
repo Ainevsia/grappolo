@@ -18,58 +18,72 @@ int main(int argc, char** argv) {
         nT = omp_get_num_threads();
     }
     
-    double time1, time2;
     graph* G = (graph *) malloc (sizeof(graph));
     char *inFile = (char*) opts.inFile;
     parse_UndirectedEdgeList(G, inFile);
     int threadsOpt = 1;
     
-    int replaceMap = 0;
-    if(  opts.basicOpt == 1 )
-        replaceMap = 1;
-    
     long NV = G->numVertices;
 
-    // Datastructures to store clustering information
     long *C_orig = (long *) malloc (NV * sizeof(long)); assert(C_orig != 0);
-    
-    // The original version of the graph
     graph* G_orig = (graph *) malloc (sizeof(graph)); 
-    duplicateGivenGraph(G, G_orig);
+    duplicateGivenGraph(G, G_orig); // bakcup
     
 #pragma omp parallel for
     for (long i=0; i<NV; i++) {
         C_orig[i] = -1;
     }
-    runMultiPhaseBasic(G, C_orig, opts.basicOpt, opts.minGraphSize, opts.threshold, opts.C_thresh, nT,threadsOpt);
-    
-    //Check if cluster ids need to be written to a file:
+    runMultiPhaseBasic(G, C_orig, 
+        opts.basicOpt, opts.minGraphSize, opts.threshold, 
+        opts.C_thresh, nT, threadsOpt);
+    G_orig->com = vector<long>(C_orig, C_orig + NV);
     if( opts.output ) {
         char outFile[256];
         sprintf(outFile,"%s_clustInfo", opts.inFile);
         printf("Cluster information will be stored in file: %s\n", outFile);
         FILE* out = fopen(outFile,"w");
         for(long i = 0; i<NV;i++) {
-            fprintf(out,"%ld\n",C_orig[i]);
+            fprintf(out,"%ld\n",G_orig->com[i]);
+
         }
         fclose(out);
     }
-    
     free(C_orig);
 
     // now start dealing with delta files, like delta-screaning 
     for (size_t i = 0; i < opts.nDelta; i++)
     {
         string sDeltaFileName = opts.sDeltaFilePrefix + to_string(i) + string(".txt");
-        graph* G_new = (graph *) malloc (sizeof(graph));
-        parse_Delta(G_new, sDeltaFileName.c_str(), G_orig);
+        graph* G_backup = (graph *) malloc (sizeof(graph));
+        parse_Delta(G_orig, sDeltaFileName.c_str());
+        NV = G_orig->numVertices;
+        long *C_orig = (long *) malloc (NV * sizeof(long)); assert(C_orig != 0);
+        duplicateGivenGraph(G_orig, G_backup);
 
+#pragma omp parallel for
+        for (long i=0; i<NV; i++) {
+            C_orig[i] = G_backup->com[i];
+        }
+        // it will comsume 1st param
+        runMultiPhaseBasic(G_orig, C_orig, 
+            opts.basicOpt, opts.minGraphSize, opts.threshold, 
+            opts.C_thresh, nT, threadsOpt);
+        G_backup->com.assign(C_orig, C_orig+NV);
+
+        G_orig = (graph *) malloc (sizeof(graph)); 
+        duplicateGivenGraph(G_backup, G_orig);
+    }
+
+    if( opts.output ) {
+        char outFile[256];
+        sprintf(outFile,"%s_clustInfo", opts.inFile);
+        printf("Cluster information will be stored in file: %s\n", outFile);
+        FILE* out = fopen(outFile,"w");
+        for(long i = 0; i<NV;i++) {
+            fprintf(out,"%ld\n",G_orig->com[i]);
+        }
+        fclose(out);
     }
     
-    
-
-
-
-
     return 0;
 }

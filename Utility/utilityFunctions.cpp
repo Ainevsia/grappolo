@@ -133,6 +133,8 @@ void duplicateGivenGraph(graph *Gin, graph *Gout) {
     Gout->numEdges     = NE;
     Gout->edgeListPtrs = edgeListPtr;
     Gout->edgeList     = edgeList;
+    Gout->tmpEdgeList  = vector<edge>(Gin->tmpEdgeList);
+    Gout->com          = vector<long>(Gin->com);
 } //End of duplicateGivenGraph()
 
 void displayGraphEdgeList(graph *G) {

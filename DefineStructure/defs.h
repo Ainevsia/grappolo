@@ -56,6 +56,7 @@
 #include <map>
 #include <vector>
 #include <unistd.h> //For getopts()
+#include <vector>
 
 #define MilanRealMax HUGE_VAL       // +INFINITY
 #define MilanRealMin -MilanRealMax  // -INFINITY
@@ -89,6 +90,12 @@ typedef struct /* the graph data structure */
     long numEdges;           /* Each edge stored twice, but counted once        */
     long * edgeListPtrs;     /* start vertex of edge, sorted, primary key        */
     edge * edgeList;         /* end   vertex of edge, sorted, secondary key      */
+    
+    /***
+     * My added fields
+     * **/
+    std::vector<edge> tmpEdgeList; // persistent storage
+    std::vector<long> com;
 } graph;
 
 typedef struct /* the graph data structure for directed graph */
